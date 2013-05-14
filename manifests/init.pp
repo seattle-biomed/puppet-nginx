@@ -34,7 +34,10 @@ class nginx (
   $proxy_set_header   = $nginx::params::nx_proxy_set_header,
   $confd_purge        = $nginx::params::nx_confd_purge,
   $configtest_enable  = $nginx::params::nx_configtest_enable,
-  $service_restart    = $nginx::params::nx_service_restrart
+  $service_restart    = $nginx::params::nx_service_restrart,
+  $resource_locations = [],
+  $resource_upstreams = [],
+  $resource_vhosts    = []
 ) inherits nginx::params {
 
   include stdlib
@@ -44,17 +47,17 @@ class nginx (
   }
 
   class { 'nginx::config':
-    worker_processes 	=> $worker_processes,
-    worker_connections 	=> $worker_connections,
-    proxy_set_header 	=> $proxy_set_header,
+    worker_processes    => $worker_processes,
+    worker_connections  => $worker_connections,
+    proxy_set_header    => $proxy_set_header,
     confd_purge         => $confd_purge,
-    require 		=> Class['nginx::package'],
-    notify  		=> Class['nginx::service'],
+    require             => Class['nginx::package'],
+    notify              => Class['nginx::service'],
   }
 
-  class { 'nginx::service': 
+  class { 'nginx::service':
     configtest_enable => $configtest_enable,
-    service_restart => $service_restart,
+    service_restart   => $service_restart,
   }
 
   # Allow the end user to establish relationships to the "main" class
@@ -67,4 +70,9 @@ class nginx (
   anchor { 'nginx::end':
     require => Class['nginx::service'],
   }
+
+  # Create resources from Heira data.
+  create_resources(nginx::resource::location,$resource_locations)
+  create_resources(nginx::resource::upstream,$resource_upstreams)
+  create_resources(nginx::resource::vhost,$resource_vhosts)
 }

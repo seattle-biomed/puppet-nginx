@@ -12,11 +12,11 @@
 #                              with nginx::resource::upstream
 #   [*proxy_read_timeout*]   - Override the default the proxy read timeout value of 90 seconds
 #   [*ssl*]                  - Indicates whether to setup SSL bindings for this location.
-#   [*ssl_only*]	     - Required if the SSL and normal vHost have the same port.
+#   [*ssl_only*]       - Required if the SSL and normal vHost have the same port.
 #   [*location_alias*]       - Path to be used as basis for serving requests for this location
 #   [*stub_status*]          - If true it will point configure module stub_status to provide nginx stats on location
 #   [*location_cfg_prepend*] - It expects a hash with custom directives to put before anything else inside location
-#   [*location_cfg_append*]  - It expects a hash with custom directives to put after everything else inside location   
+#   [*location_cfg_append*]  - It expects a hash with custom directives to put after everything else inside location
 #   [*try_files*]            - An array of file locations to try
 #   [*option*]               - Reserved for future use
 #
@@ -31,7 +31,7 @@
 #    location => '/bob',
 #    vhost    => 'test2.local',
 #  }
-#  
+#
 #  Custom config example to limit location on localhost,
 #  create a hash with any extra custom config you want.
 #  $my_config = {
@@ -46,7 +46,19 @@
 #    vhost               => 'test2.local',
 #    location_cfg_append => $my_config,
 #  }
-
+#
+# Sample Usage in Heira:
+#  nginx::resource_locations:
+#    test2.local-bob:
+#      ensure:      present
+#      www_root:    '/var/www/bob'
+#      location:    '/bob'
+#      vhost:       'test2.local'
+#      location_cfg_append:
+#        access_log: 'off'
+#        allow:      '127.0.0.1'
+#        deny:       'all'
+#
 define nginx::resource::location(
   $ensure               = present,
   $vhost                = undef,
@@ -55,14 +67,14 @@ define nginx::resource::location(
   $proxy                = undef,
   $proxy_read_timeout   = $nginx::params::nx_proxy_read_timeout,
   $ssl                  = false,
-  $ssl_only		= false,
+  $ssl_only             = false,
   $location_alias       = undef,
   $option               = undef,
   $stub_status          = undef,
   $location_cfg_prepend = undef,
   $location_cfg_append  = undef,
   $try_files            = undef,
-  $location
+  $location             = undef,
 ) {
   File {
     owner  => 'root',

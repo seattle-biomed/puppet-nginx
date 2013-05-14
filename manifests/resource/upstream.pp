@@ -19,9 +19,18 @@
 #      'localhost:3002',
 #    ],
 #  }
+#
+# Sample Usage, with Heira:
+# nginx::resource_upstreams:
+#   proxypass:
+#     ensure: 'present'
+#     members:
+#       - 'localhost:3000'
+#       - 'localhost:3001'
+#       - 'localhost:3002'
 define nginx::resource::upstream (
-  $ensure = 'present',
-  $members
+  $ensure   = 'present',
+  $members  = []
 ) {
   File {
     owner => 'root',
@@ -29,11 +38,14 @@ define nginx::resource::upstream (
     mode  => '0644',
   }
 
+  ## Shared Variables
+  $ensure_real = $ensure ? {
+    'absent' => absent,
+    default  => 'file',
+  }
+
   file { "/etc/nginx/conf.d/${name}-upstream.conf":
-    ensure   => $ensure ? {
-      'absent' => absent,
-      default  => 'file',
-    },
+    ensure   => $ensure_real,
     content  => template('nginx/conf.d/upstream.erb'),
     notify   => Class['nginx::service'],
   }

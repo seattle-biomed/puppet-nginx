@@ -25,7 +25,7 @@ class nginx::package {
       }
     }
     debian,ubuntu: {
-      class { 'nginx::package::debian': 
+      class { 'nginx::package::debian':
         require => Anchor['nginx::package::begin'],
         before  => Anchor['nginx::package::end'],
       }
@@ -34,6 +34,11 @@ class nginx::package {
       class { 'nginx::package::suse':
         require => Anchor['nginx::package::begin'],
         before  => Anchor['nginx::package::end'],
+      }
+    }
+    default: {
+      notify { 'nginx::package':
+        message => "Could not determine package for ${::operatingsystem}"
       }
     }
   }

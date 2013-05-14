@@ -39,6 +39,16 @@
 #    ssl_cert => '/tmp/server.crt',
 #    ssl_key  => '/tmp/server.pem',
 #  }
+#
+# Sample Usage, in Heira:
+#  nginx::resource_vhosts:
+#    test2.local:
+#      ensure:   'present'
+#      www_root: '/var/www/nginx-default'
+#      ssl:      'true'
+#      ssl_cert: '/tmp/server.crt'
+#      ssl_key:  '/tmp/server.pem'
+#
 define nginx::resource::vhost(
   $ensure                 = 'enable',
   $listen_ip              = '*',
@@ -51,7 +61,7 @@ define nginx::resource::vhost(
   $ssl                    = false,
   $ssl_cert               = undef,
   $ssl_key                = undef,
-  $ssl_port		  = '443',
+  $ssl_port               = '443',
   $proxy                  = undef,
   $proxy_read_timeout     = $nginx::params::nx_proxy_read_timeout,
   $index_files            = ['index.html', 'index.htm', 'index.php'],
@@ -60,7 +70,7 @@ define nginx::resource::vhost(
   $rewrite_www_to_non_www = false,
   $location_cfg_prepend   = undef,
   $location_cfg_append    = undef,
-  $try_files              = undef
+  $try_files              = []
 ) {
 
   File {
@@ -82,19 +92,22 @@ define nginx::resource::vhost(
     }
   }
 
+  ## Shared Variables
+  $ensure_real = $ensure ? {
+    'absent' => absent,
+    default  => 'file',
+  }
+
   # Use the File Fragment Pattern to construct the configuration files.
   # Create the base configuration file reference.
   if ($listen_port != $ssl_port) {
     file { "${nginx::config::nx_temp_dir}/nginx.d/${name}-001":
-      ensure  => $ensure ? {
-        'absent' => absent,
-        default  => 'file',
-      },
+      ensure  => $ensure_real,
       content => template('nginx/vhost/vhost_header.erb'),
-      notify => Class['nginx::service'],
+      notify  => Class['nginx::service'],
     }
   }
-  
+
   if ($ssl == 'true') and ($ssl_port == $listen_port) {
     $ssl_only = 'true'
   }
@@ -127,10 +140,7 @@ define nginx::resource::vhost(
   # Create a proper file close stub.
   if ($listen_port != $ssl_port) {
     file { "${nginx::config::nx_temp_dir}/nginx.d/${name}-699":
-      ensure  => $ensure ? {
-        'absent' => absent,
-        default  => 'file',
-      },
+      ensure  => $ensure_real,
       content => template('nginx/vhost/vhost_footer.erb'),
       notify  => Class['nginx::service'],
     }
@@ -139,20 +149,14 @@ define nginx::resource::vhost(
   # Create SSL File Stubs if SSL is enabled
   if ($ssl == 'true') {
     file { "${nginx::config::nx_temp_dir}/nginx.d/${name}-700-ssl":
-      ensure => $ensure ? {
-        'absent' => absent,
-        default  => 'file',
-      },
+      ensure  => $ensure_real,
       content => template('nginx/vhost/vhost_ssl_header.erb'),
-      notify => Class['nginx::service'],
+      notify  => Class['nginx::service'],
     }
     file { "${nginx::config::nx_temp_dir}/nginx.d/${name}-999-ssl":
-      ensure => $ensure ? {
-        'absent' => absent,
-        default  => 'file',
-      },
+      ensure  => $ensure_real,
       content => template('nginx/vhost/vhost_footer.erb'),
-      notify => Class['nginx::service'],
+      notify  => Class['nginx::service'],
     }
   }
 }

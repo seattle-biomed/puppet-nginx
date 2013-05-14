@@ -33,7 +33,7 @@ Add a Proxy Server(s)
      nginx::resource::upstream { 'puppet_rack_app':
        ensure  => present,
        members => [
-         'localhost:3000', 
+         'localhost:3000',
          'localhost:3001',
          'localhost:3002',
        ],
@@ -41,7 +41,25 @@ Add a Proxy Server(s)
 
      nginx::resource::vhost { 'rack.puppetlabs.com':
        ensure   => present,
-       proxy  => 'http://puppet_rack_app',
+       proxy    => 'http://puppet_rack_app',
      }
-   } 
+   }
+</pre>
+
+Add a proxy Server using Hiera:
+<pre>
+   ---
+   classes:
+      - 'nginx'
+   nginx::resource_upstreams:
+      puppet_rack_app:
+         ensure: 'present'
+         members:
+            - 'localhost:3000'
+            - 'localhost:3001'
+            - 'localhost:3002'
+   nginx::resource_vhosts:
+      rack.puppetlabs.com:
+         ensure:  'present'
+         proxy:   'http://puppet_rack_app'
 </pre>
