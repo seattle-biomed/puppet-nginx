@@ -20,7 +20,7 @@
 #    ],
 #  }
 #
-# Sample Usage, with Heira:
+# Sample Usage, with Hiera:
 # nginx::resource_upstreams:
 #   proxypass:
 #     ensure: 'present'

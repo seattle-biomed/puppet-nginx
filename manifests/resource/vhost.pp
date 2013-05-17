@@ -40,7 +40,7 @@
 #    ssl_key  => '/tmp/server.pem',
 #  }
 #
-# Sample Usage, in Heira:
+# Sample Usage, in Hiera:
 #  nginx::resource_vhosts:
 #    test2.local:
 #      ensure:   'present'

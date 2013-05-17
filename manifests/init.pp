@@ -71,7 +71,7 @@ class nginx (
     require => Class['nginx::service'],
   }
 
-  # Create resources from Heira data.
+  # Create resources from Hiera data.
   create_resources(nginx::resource::location,$resource_locations)
   create_resources(nginx::resource::upstream,$resource_upstreams)
   create_resources(nginx::resource::vhost,$resource_vhosts)

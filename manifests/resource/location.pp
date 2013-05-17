@@ -47,7 +47,7 @@
 #    location_cfg_append => $my_config,
 #  }
 #
-# Sample Usage in Heira:
+# Sample Usage in Hiera:
 #  nginx::resource_locations:
 #    test2.local-bob:
 #      ensure:      present
@@ -65,14 +65,14 @@ define nginx::resource::location(
   $www_root             = undef,
   $index_files          = ['index.html', 'index.htm', 'index.php'],
   $proxy                = undef,
-  $proxy_read_timeout   = $nginx::params::nx_proxy_read_timeout,
+  $proxy_read_timeout   = '90',
   $ssl                  = false,
   $ssl_only             = false,
   $location_alias       = undef,
   $option               = undef,
   $stub_status          = undef,
-  $location_cfg_prepend = undef,
-  $location_cfg_append  = undef,
+  $location_cfg_prepend = [],
+  $location_cfg_append  = [],
   $try_files            = undef,
   $location             = undef,
 ) {
