@@ -24,6 +24,7 @@ class nginx::service(
     subscribe   => File["${nginx::params::nx_temp_dir}/nginx.d"],
   }
   service { 'nginx':
+    alias      => 'httpd',
     ensure     => running,
     enable     => true,
     hasstatus  => true,
