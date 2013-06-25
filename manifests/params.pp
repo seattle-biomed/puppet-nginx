@@ -26,6 +26,7 @@ class nginx::params {
   $nx_keepalive_timeout  = 65
   $nx_tcp_nodelay        = on
   $nx_gzip               = on
+  $default_type          = 'application/octet-stream'
 
   $nx_proxy_redirect          = off
   $nx_proxy_set_header        = [
