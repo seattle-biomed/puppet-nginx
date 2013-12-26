@@ -35,27 +35,31 @@ class nginx (
   $confd_purge        = $nginx::params::nx_confd_purge,
   $configtest_enable  = $nginx::params::nx_configtest_enable,
   $service_restart    = $nginx::params::nx_service_restrart,
-  $resource_locations = [],
-  $resource_upstreams = [],
-  $resource_vhosts    = []
+  $resource_locations = hash([]),
+  $resource_upstreams = hash([]),
+  $resource_vhosts    = hash([]),
 ) inherits nginx::params {
+
+  validate_hash($resource_locations)
+  validate_hash($resource_upstreams)
+  validate_hash($resource_vhosts)
 
   include stdlib
 
-  class { 'nginx::package':
-    notify => Class['nginx::service'],
+  class { '::nginx::package':
+    notify => Class['::nginx::service'],
   }
 
-  class { 'nginx::config':
+  class { '::nginx::config':
     worker_processes    => $worker_processes,
     worker_connections  => $worker_connections,
     proxy_set_header    => $proxy_set_header,
     confd_purge         => $confd_purge,
-    require             => Class['nginx::package'],
-    notify              => Class['nginx::service'],
+    require             => Class['::nginx::package'],
+    notify              => Class['::nginx::service'],
   }
 
-  class { 'nginx::service':
+  class { '::nginx::service':
     configtest_enable => $configtest_enable,
     service_restart   => $service_restart,
   }
