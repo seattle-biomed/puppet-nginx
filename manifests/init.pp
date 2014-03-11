@@ -44,8 +44,6 @@ class nginx (
   validate_hash($resource_upstreams)
   validate_hash($resource_vhosts)
 
-  include stdlib
-
   class { '::nginx::package':
     notify => Class['::nginx::service'],
   }
