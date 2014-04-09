@@ -1,21 +1,23 @@
-# NGINX Module
+#WARNING 
 
-James Fryman <jamison@puppetlabs.com>
+This module is now unsupported by Puppetlabs.  It is replaced by the upstream
+version at http://forge.puppetlabs.com/jfryman/nginx which is a much improved
+version of this module.  It's had many new featured and abilities merged in and
+is a true superset of this module.  Please adjust your Modulefile's and other
+resources to use it instead.
 
-This module manages NGINX from within Puppet.
+You can add jfryman's version as a git upstream remote by doing:
 
-# Quick Start
+$ git remote add jfryman https://github.com/jfryman/puppet-nginx.git
+$ git fetch jfryman
 
-Install and bootstrap an NGINX instance
+You can view a list of release tags at:
 
-<pre>
-    node default {
-      class { 'nginx': }
-    }
-</pre>
+https://github.com/jfryman/puppet-nginx/releases
 
-Setup a new virtual host
+You can then merge his into yours:
 
+<<<<<<< HEAD
 <pre>
     node default {
       class { 'nginx': }
@@ -63,3 +65,6 @@ Add a proxy Server using Hiera:
          ensure:  'present'
          proxy:   'http://puppet_rack_app'
 </pre>
+=======
+$ git merge jfryman v0.0.5
+>>>>>>> 08fa770406d0a5b5056a02375d9b2d3e6d32be09
