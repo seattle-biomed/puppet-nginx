@@ -39,8 +39,8 @@ class nginx (
   $resource_upstreams = hash([]),
   $resource_vhosts    = hash([]),
 ) inherits nginx::params {
-  
-  warning('This module is no longer supported and we direct you to our upstream source, http://forge.puppetlabs.com/jfryman/nginx')
+
+  warning('This module, puppet-nginx, is no longer supported and we direct you to our upstream source, http://forge.puppetlabs.com/jfryman/nginx')
 
   validate_hash($resource_locations)
   validate_hash($resource_upstreams)
